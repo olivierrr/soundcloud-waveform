@@ -5,13 +5,13 @@ var WAVEFORM = function(options) {
 	this.height = options.height || 100
 	this.width = options.width || 300
 	this.waveform = options.waveform 
+	this.lines = options.lines || 100
 
 }
 
 WAVEFORM.prototype.init = function() {
 
-	//temp
-	console.log(calc(this.waveform, 100))
+	console.log('init')
 	
 	// create canvas
 	var canvas = document.createElement('canvas')
@@ -31,11 +31,13 @@ WAVEFORM.prototype.init = function() {
 
 WAVEFORM.prototype.update = function(options) {
 
-	if(options['gradient']) //update gradient
+	console.log('update')
 
-	if(options['']) //do things
-
-	if(options['']) //do things
+	// if(options) {
+	// 	if(options.gradient) //update gradient
+	// 	if(options) //do things
+	// 	if(options) //do things
+	// }
 
 	//render
 	this.draw()
@@ -43,57 +45,52 @@ WAVEFORM.prototype.update = function(options) {
 
 WAVEFORM.prototype.draw = function() {
 
+	console.log('draw')
+
+	var waves = this.waves || (this.waves = this.genWaves())
+
 	var xPos = 0
 	var yPos = 0
-
-	var i = this.waveform.length
 
 	//should be on init // should be updatedable
 	gradient = this.ctx.createLinearGradient(0,100,0,0)
 	gradient.addColorStop(0, '#333333')
 	gradient.addColorStop(1, '#3D3D3D')
 	
-	while(i--) {
+	for(var i=0; i<waves.length; i+=1) {
 
 		this.ctx.fillStyle = gradient
-		this.ctx.fillRect(xPos, 100, 3, -Math.abs(this.waveform[i]*100))
+		this.ctx.fillRect(xPos, 100, 3, Math.floor(-Math.abs(waves[i]*100)))
 		
 		this.ctx.fillStyle = 'red'		
-		this.ctx.fillRect(xPos, 100, 3, this.waveform[i]*10)
+		this.ctx.fillRect(xPos, 100, 3, Math.floor(waves[i]*10))
 
 		xPos += 6
 	}
 
 }
 
-WAVEFORM.prototype.on = function() {
+WAVEFORM.prototype.genWaves = function() {
 
-}
+	console.log('genWaves')
 
+	var result, waves, temp, i
 
-// temp
-function calc(waveform, into) {
-
-	var result, arr, temp, i
-
-	result = (waveform.length / into)
-	arr = []
+	result = (this.waveform.length / this.lines)
+	waves = []
 	temp = 0
 
-	for(i=0; i<waveform.length; i+=1) {
+	for(i=0; i<this.waveform.length; i+=1) {
 
-		temp += waveform[i]
+		temp += this.waveform[i]
 
-		if(i%result === 0) {
-			arr.push(temp/result)
+		if(i%result === 0 && i !== 0) {
+			waves.push(temp/result)
 			temp = 0
 		}
 	}
-	return arr
+	return waves
 }
-
-/////
-
 
 window.o = new WAVEFORM({
     container: document.body,
