@@ -28,10 +28,10 @@ WAVEFORM.prototype.init = function() {
 	// append canvas
 	this.container.appendChild(this.canvas)
 
+	//default colors
 	this.color('bar', ['#666666', 0, '#868686', 1])
 	this.color('bar-active', ['#FF3300', 0, '#FF5100', 1])
 	this.color('bar-selected', ['#993016', 0, '#973C15', 1])
-
 	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
 	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
 	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
@@ -74,7 +74,7 @@ WAVEFORM.prototype.update = function(options) {
 			this.genWaves()
 		}
 
-		if(!options.reflection || options.reflection) {
+		if(options.reflection === false || options.reflection === true) {
 			this.reflection = options.reflection
 		}
 
@@ -94,7 +94,7 @@ WAVEFORM.prototype.color = function(name, colors) {
 	}
 
 	this.colors[name] = gradient
-};
+}
 
 WAVEFORM.prototype.draw = function() {
 
@@ -118,7 +118,8 @@ WAVEFORM.prototype.draw = function() {
 		this.ctx.fillStyle = this.colors['gutter-active']
 		var smaller = Math.min(waves[i],waves[i+1])
 		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, Math.floor(-Math.abs(smaller*100)))
-		
+
+		console.log(this.reflection)
 		// bar reflection
 		if(this.reflection === true) {
 			this.ctx.fillStyle = '#999999'		
@@ -158,11 +159,11 @@ WAVEFORM.prototype.drawFromTo = function(from, to, color) {
 		this.ctx.fillRect( ((this.barWidth+this.gutter) * (from+i) ), 100, this.barWidth, Math.floor(-Math.abs(this.waves[i]*100)))
 	}
 	
-};
+}
 
 WAVEFORM.prototype.drawAll = function(first_argument) {
 	// body...
-};
+}
 
 // need more accurate algo
 WAVEFORM.prototype.genWaves = function() {
