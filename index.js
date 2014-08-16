@@ -6,6 +6,7 @@ var WAVEFORM = function(options) {
 	this.height = options.height || 100
 	this.width = options.width || 300
 	this.waveform = options.waveform
+	this.reflection = options.reflection || null
 
 	this.colors = {}
 
@@ -34,6 +35,9 @@ WAVEFORM.prototype.init = function() {
 	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
 	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
 	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
+
+	//parse waveform
+	this.genWaves()
 
 	//render
 	this.draw()
@@ -70,6 +74,10 @@ WAVEFORM.prototype.update = function(options) {
 			this.genWaves()
 		}
 
+		if(!options.reflection || options.reflection) {
+			this.reflection = options.reflection
+		}
+
 	}
 
 	//render
@@ -92,7 +100,7 @@ WAVEFORM.prototype.draw = function() {
 
 	console.log('draw')
 
-	var waves = this.waves || this.genWaves()
+	var waves = this.waves
 
 	var xPos = 0
 	var yPos = 100
@@ -103,17 +111,19 @@ WAVEFORM.prototype.draw = function() {
 	for(var i=0; i<waves.length; i+=1) {
 
 		// main bar
-		this.ctx.fillStyle = this.colors['bar']
+		this.ctx.fillStyle = this.colors['bar-active']
 		this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(-Math.abs(waves[i]*100)))
 
 		// gutter
-		this.ctx.fillStyle = this.colors['gutter']
+		this.ctx.fillStyle = this.colors['gutter-active']
 		var smaller = Math.min(waves[i],waves[i+1])
 		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, Math.floor(-Math.abs(smaller*100)))
 		
 		// bar reflection
-		this.ctx.fillStyle = '#999999'		
-		this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(waves[i]*30))
+		if(this.reflection === true) {
+			this.ctx.fillStyle = '#999999'		
+			this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(waves[i]*30))
+		}
 
 		xPos += this.barWidth + this.gutter
 	}
