@@ -16,6 +16,15 @@ var WAVEFORM = function(options) {
 	this.gutter = options.gutter || 1
 	this.barWidth = options.barWidth || 3
 
+	// active = highlighted secion of track
+	this.active = 20
+
+	//
+	this.selected = 0
+
+	// mouse dragging
+	this.isDragging = false
+
 	// 0 = out of focus // 1 = onfocus and playing // 2 = onfocus and paused
 	this.state = 0
 
@@ -64,6 +73,27 @@ WAVEFORM.prototype.destroy = function() {
 WAVEFORM.prototype.bindEventHandlers = function() {
 
 	this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this))
+	this.canvas.addEventListener('mousemove', this.onMouseOver.bind(this))
+	this.canvas.addEventListener('mouseout', this.onMouseOut.bind(this))
+}
+
+WAVEFORM.prototype.onMouseOut = function(e) {
+	this.selected = 0	
+	this.draw()
+}
+
+WAVEFORM.prototype.onMouseOver = function(e) {
+
+	var x = e.x - this.canvas.offsetLeft
+	var y = e.y - this.canvas.offsetTop
+
+	// it's a bit off
+	var barClicked = Math.round( x / (this.barWidth + this.gutter) )
+
+	this.selected = barClicked
+
+	this.draw()
+
 }
 
 WAVEFORM.prototype.onMouseDown = function(e) {
@@ -71,6 +101,12 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
+	// it's a bit off
+	var barClicked = Math.round( x / (this.barWidth + this.gutter) )
+
+	this.active = barClicked
+
+	this.draw()
 }
 
 WAVEFORM.prototype.update = function(options) {
@@ -141,11 +177,16 @@ WAVEFORM.prototype.draw = function() {
 	for(var i=0; i<my.waves.length; i+=1) {
 
 		// main bar
-		my.ctx.fillStyle = my.colors['bar-active']
+		my.ctx.fillStyle = my.colors['bar']
+		if(this.active > i) my.ctx.fillStyle = my.colors['bar-active']
+		if(this.selected > i) my.ctx.fillStyle = my.colors['bar-selected']
 		my.ctx.fillRect(xPos, yPos, my.barWidth, my.waves[i])
 
 		// gutter
-		my.ctx.fillStyle = my.colors['gutter-active']
+		my.ctx.fillStyle = my.colors['gutter']
+		if(this.active > i) my.ctx.fillStyle = my.colors['gutter-active']
+		if(this.selected > i) my.ctx.fillStyle = my.colors['gutter-selected']
+
 		var smallerBar = Math.max(my.waves[i],my.waves[i+1])
 		my.ctx.fillRect(xPos + my.barWidth, yPos, my.gutter, smallerBar)
 
