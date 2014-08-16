@@ -100,75 +100,43 @@ WAVEFORM.prototype.draw = function() {
 
 	console.log('draw')
 
-	var waves = this.waves
+	var my = this
 
 	var xPos = 0
 	var yPos = 100
 
-	//clear canvas for redraw
-	this.ctx.clearRect ( 0 , 0 , this.width , this.height );
+	// clear canvas for redraw
+	my.ctx.clearRect ( 0 , 0 , my.width , my.height );
 	
-	for(var i=0; i<waves.length; i+=1) {
+	// itterate waves
+	for(var i=0; i<my.waves.length; i+=1) {
 
 		// main bar
-		this.ctx.fillStyle = this.colors['bar-active']
-		this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(-Math.abs(waves[i]*100)))
+		my.ctx.fillStyle = my.colors['bar-active']
+		my.ctx.fillRect(xPos, yPos, my.barWidth, my.waves[i])
 
 		// gutter
-		this.ctx.fillStyle = this.colors['gutter-active']
-		var smaller = Math.min(waves[i],waves[i+1])
-		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, Math.floor(-Math.abs(smaller*100)))
+		my.ctx.fillStyle = my.colors['gutter-active']
+		var smallerBar = Math.max(my.waves[i],my.waves[i+1])
+		my.ctx.fillRect(xPos + my.barWidth, yPos, my.gutter, smallerBar)
 
-		console.log(this.reflection)
 		// bar reflection
-		if(this.reflection === true) {
-			this.ctx.fillStyle = '#999999'		
-			this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(waves[i]*30))
+		if(my.reflection === true) {
+			my.ctx.fillStyle = '#999999'
+			my.ctx.fillRect(xPos, yPos, my.barWidth, Math.abs(my.waves[i])*0.4)
 		}
 
-		xPos += this.barWidth + this.gutter
+		xPos += my.barWidth + my.gutter
 	}
 
-}
-
-//todo
-WAVEFORM.prototype.drawOne = function(num, color) {
-	
-	console.log('drawOne')
-
-	var wave = this.waves[num]
-
-	this.ctx.fillStyle = this.colors[color]
-	this.ctx.fillRect( ((this.barWidth+this.gutter) *num), 100, this.barWidth, Math.floor(-Math.abs(wave*100)))
-
-	// // gutter
-	// this.ctx.fillStyle = this.colors['gutter-active']
-	// var smaller = Math.min(this.waves[num],this.waves[num+1])
-	// this.ctx.fillRect(((this.barWidth+this.gutter) *num) + this.barWidth, 100, this.gutter, Math.floor(-Math.abs(smaller*100)))
-}
-
-WAVEFORM.prototype.drawFromTo = function(from, to, color) {
-	
-	console.log('drawFromTo')
-
-	var fromTo = to - from
-
-	this.ctx.fillStyle = this.colors[color]
-
-	for(var i = 0; i<fromTo; i+=1) {
-		this.ctx.fillRect( ((this.barWidth+this.gutter) * (from+i) ), 100, this.barWidth, Math.floor(-Math.abs(this.waves[i]*100)))
-	}
-	
-}
-
-WAVEFORM.prototype.drawAll = function(first_argument) {
-	// body...
 }
 
 // need more accurate algo
 WAVEFORM.prototype.genWaves = function() {
 
 	console.log('genWaves')
+
+	//Math.floor(-Math.abs(my.waves[i]*100))
 
 	var result, waves, wave, i
 
@@ -184,7 +152,12 @@ WAVEFORM.prototype.genWaves = function() {
 		wave += this.waveform[i]
 
 		if(i%result === 0 && i !== 0) {
-			waves.push(wave/result)
+
+			wave = (wave/result)
+
+			wave = Math.floor(-Math.abs(wave*100))
+
+			waves.push(wave)
 			wave = 0
 
 		}
