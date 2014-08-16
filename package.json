@@ -1,0 +1,19 @@
+{
+  "name": "soundcloud-waveform",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify -e index.js > bundle.js",
+    "dev": "beefy index.js:bundle.js --live --open",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "olivierrr",
+  "license": "MIT",
+  "devDependencies": {
+    "beefy": "^2.1.0",
+    "browserify": "^5.9.3"
+  },
+  "dependencies": {
+  }
+}
