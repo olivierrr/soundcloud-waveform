@@ -39,9 +39,7 @@ WAVEFORM.prototype.init = function() {
 	this.draw()
 
 }
-////bar-bottom #666666  //bar-top #868686 //gutter-bottom #6B6B6B //gutter-top #909090
 
-//active-bottom #FF2F00 // #FF5100 ////////////////// #993016 #973C15
 WAVEFORM.prototype.update = function(options) {
 
 	console.log('update')
@@ -88,8 +86,6 @@ WAVEFORM.prototype.color = function(name, colors) {
 	}
 
 	this.colors[name] = gradient
-
-	this.draw()
 };
 
 WAVEFORM.prototype.draw = function() {
@@ -116,7 +112,7 @@ WAVEFORM.prototype.draw = function() {
 		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, Math.floor(-Math.abs(smaller*100)))
 		
 		// bar reflection
-		this.ctx.fillStyle = '#B3B3B3'		
+		this.ctx.fillStyle = '#999999'		
 		this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(waves[i]*30))
 
 		xPos += this.barWidth + this.gutter
@@ -124,6 +120,39 @@ WAVEFORM.prototype.draw = function() {
 
 }
 
+//todo
+WAVEFORM.prototype.drawOne = function(num, color) {
+	
+	console.log('drawOne')
+
+	var wave = this.waves[num]
+
+	this.ctx.fillStyle = this.colors[color]
+	this.ctx.fillRect( ((this.barWidth+this.gutter) *num), 100, this.barWidth, Math.floor(-Math.abs(wave*100)))
+
+	// // gutter
+	// this.ctx.fillStyle = this.colors['gutter-active']
+	// var smaller = Math.min(this.waves[num],this.waves[num+1])
+	// this.ctx.fillRect(((this.barWidth+this.gutter) *num) + this.barWidth, 100, this.gutter, Math.floor(-Math.abs(smaller*100)))
+}
+
+WAVEFORM.prototype.drawFromTo = function(from, to, color) {
+	
+	console.log('drawFromTo')
+
+	var fromTo = to - from
+
+	this.ctx.fillStyle = this.colors[color]
+
+	for(var i = 0; i<fromTo; i+=1) {
+		this.ctx.fillRect( ((this.barWidth+this.gutter) * (from+i) ), 100, this.barWidth, Math.floor(-Math.abs(this.waves[i]*100)))
+	}
+	
+};
+
+WAVEFORM.prototype.drawAll = function(first_argument) {
+	// body...
+};
 
 // need more accurate algo
 WAVEFORM.prototype.genWaves = function() {
