@@ -7,7 +7,8 @@ var WAVEFORM = function(options) {
 	this.waveform = options.waveform 
 	this.lines = options.lines || 100
 
-	this.gutter = options.gutter || 3
+	this.gutter = options.gutter || 1
+	this.barWidth = options.barWidth || 3
 
 }
 
@@ -55,29 +56,29 @@ WAVEFORM.prototype.draw = function() {
 	var waves = this.waves || (this.waves = this.genWaves())
 
 	var xPos = 0
-	var yPos = 0
+	var yPos = 100
 
 	//should be on init // should be updatedable
 	gradient = this.ctx.createLinearGradient(0,100,0,0)
-	gradient.addColorStop(0, '#333333')
-	gradient.addColorStop(1, '#3D3D3D')
+	gradient.addColorStop(0, '#373737')
+	gradient.addColorStop(1, '#BDBDBD')
 	
 	for(var i=0; i<waves.length; i+=1) {
 
 		// main bar
-		this.ctx.fillStyle = gradient
-		this.ctx.fillRect(xPos, 100, 3, Math.floor(-Math.abs(waves[i]*100)))
+		this.ctx.fillStyle = '#333333'
+		this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(-Math.abs(waves[i]*100)))
 
 		// gutter
-		this.ctx.fillStyle = 'blue'
+		this.ctx.fillStyle = gradient
 		var smaller = Math.min(waves[i],waves[i+1])
-		this.ctx.fillRect(xPos + this.gutter, 100, 3, Math.floor(-Math.abs(smaller*100)))
+		this.ctx.fillRect(xPos + this.barWidth, yPos, this.barWidth, Math.floor(-Math.abs(smaller*100)))
 		
 		// bar reflection
-		this.ctx.fillStyle = 'red'		
-		this.ctx.fillRect(xPos, 100, 3, Math.floor(waves[i]*10))
+		this.ctx.fillStyle = '#B3B3B3'		
+		this.ctx.fillRect(xPos, yPos, this.barWidth, Math.floor(waves[i]*30))
 
-		xPos += 6
+		xPos += this.barWidth + this.gutter
 	}
 
 }
