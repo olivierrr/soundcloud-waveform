@@ -27,14 +27,21 @@ WAVEFORM.prototype.init = function() {
 	// append canvas
 	this.container.appendChild(this.canvas)
 
-	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
 	this.color('bar', ['#666666', 0, '#868686', 1])
+	this.color('bar-active', ['#FF3300', 0, '#FF5100', 1])
+	this.color('bar-selected', ['#993016', 0, '#973C15', 1])
+
+	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
+	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
+	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
 
 	//render
 	this.draw()
 
 }
 ////bar-bottom #666666  //bar-top #868686 //gutter-bottom #6B6B6B //gutter-top #909090
+
+//active-bottom #FF2F00 // #FF5100 ////////////////// #993016 #973C15
 WAVEFORM.prototype.update = function(options) {
 
 	console.log('update')
