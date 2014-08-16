@@ -12,8 +12,8 @@
   "license": "MIT",
   "devDependencies": {
     "beefy": "^2.1.0",
-    "browserify": "^5.9.3"
+    "browserify": "^5.9.3",
+    "dat-gui": "^0.5.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
