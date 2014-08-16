@@ -17,10 +17,10 @@ var WAVEFORM = function(options) {
 	this.barWidth = options.barWidth || 3
 
 	// active = highlighted secion of track
-	this.active = 80
+	this.active = 0
 
 	//
-	this.selected = 20
+	this.selected = 0
 
 	// mouse dragging
 	this.isDragging = false
@@ -75,6 +75,7 @@ WAVEFORM.prototype.bindEventHandlers = function() {
 	this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this))
 	this.canvas.addEventListener('mousemove', this.onMouseOver.bind(this))
 	this.canvas.addEventListener('mouseout', this.onMouseOut.bind(this))
+	this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this))
 }
 
 WAVEFORM.prototype.onMouseOut = function(e) {
@@ -87,8 +88,16 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
+
 	// it's a bit off
-	var barClicked = Math.round( x / (this.barWidth + this.gutter) )
+	var barClicked = Math.round( x / (this.barWidth + this.gutter) ) - ( (this.barWidth + this.gutter) / 2.5 )
+
+	if(this.isDragging === true) {
+		this.selected = 0
+		this.active = barClicked
+		this.draw()
+		return
+	}
 
 	this.selected = barClicked
 
@@ -98,15 +107,21 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 
 WAVEFORM.prototype.onMouseDown = function(e) {
 
+	this.isDragging = true
+
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
 	// it's a bit off
-	var barClicked = Math.round( x / (this.barWidth + this.gutter) )
+	var barClicked = Math.round( x / (this.barWidth + this.gutter) ) - ( (this.barWidth + this.gutter) / 2.5 )
 
 	this.active = barClicked
 
 	this.draw()
+}
+
+WAVEFORM.prototype.onMouseUp = function(e) {
+	this.isDragging = false
 }
 
 WAVEFORM.prototype.update = function(options) {
