@@ -17,10 +17,10 @@ var WAVEFORM = function(options) {
 	this.barWidth = options.barWidth || 3
 
 	// active = highlighted secion of track
-	this.active = 20
+	this.active = 80
 
 	//
-	this.selected = 0
+	this.selected = 20
 
 	// mouse dragging
 	this.isDragging = false
@@ -179,13 +179,20 @@ WAVEFORM.prototype.draw = function() {
 		// main bar
 		my.ctx.fillStyle = my.colors['bar']
 		if(this.active > i) my.ctx.fillStyle = my.colors['bar-active']
-		if(this.selected > i) my.ctx.fillStyle = my.colors['bar-selected']
+
+		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
+			my.ctx.fillStyle = my.colors['bar-selected']
+		}
+
 		my.ctx.fillRect(xPos, yPos, my.barWidth, my.waves[i])
 
 		// gutter
 		my.ctx.fillStyle = my.colors['gutter']
 		if(this.active > i) my.ctx.fillStyle = my.colors['gutter-active']
-		if(this.selected > i) my.ctx.fillStyle = my.colors['gutter-selected']
+
+		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
+			my.ctx.fillStyle = my.colors['gutter-selected']
+		}
 
 		var smallerBar = Math.max(my.waves[i],my.waves[i+1])
 		my.ctx.fillRect(xPos + my.barWidth, yPos, my.gutter, smallerBar)
