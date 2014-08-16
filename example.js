@@ -28,7 +28,7 @@ function datGui() {
 	var text = new gui_()
 	var gui = new dat.GUI()
 
-	var width = gui.add(text, 'width', 0, 1000).step(1)
+	var width = gui.add(text, 'width', 0, 1000).step(10)
 
 	var height = gui.add(text, 'heigth', 0, 300).step(1)
 

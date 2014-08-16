@@ -6,7 +6,6 @@ var WAVEFORM = function(options) {
 	this.height = options.height || 100
 	this.width = options.width || 300
 	this.waveform = options.waveform 
-	this.lines = options.lines || 100
 
 	this.gutter = options.gutter || 1
 	this.barWidth = options.barWidth || 3
@@ -39,23 +38,26 @@ WAVEFORM.prototype.update = function(options) {
 
 		if(options.gutter) {
 			this.gutter = options.gutter
+			this.genWaves()
 		}
 
 		if(options.barWidth) {
 			this.barWidth = options.barWidth
+			this.genWaves()
 		}
-		
+
 		if(options.gradient) console.log('awdwd')
-		if(options.lines) console.log('awdwd')
 
 		if(options.width) {
 			this.width = options.width
 			this.canvas.width = this.width
+			this.genWaves()
 		}
 
 		if(options.height) {
 			this.height = options.height
 			this.canvas.height = this.height
+			this.genWaves()
 		}
 
 	}
@@ -68,7 +70,7 @@ WAVEFORM.prototype.draw = function() {
 
 	console.log('draw')
 
-	var waves = this.waves || (this.waves = this.genWaves())
+	var waves = this.waves || this.genWaves()
 
 	var xPos = 0
 	var yPos = 100
@@ -90,7 +92,7 @@ WAVEFORM.prototype.draw = function() {
 		// gutter
 		this.ctx.fillStyle = gradient
 		var smaller = Math.min(waves[i],waves[i+1])
-		this.ctx.fillRect(xPos + this.barWidth, yPos, this.barWidth, Math.floor(-Math.abs(smaller*100)))
+		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, Math.floor(-Math.abs(smaller*100)))
 		
 		// bar reflection
 		this.ctx.fillStyle = '#B3B3B3'		
@@ -105,23 +107,29 @@ WAVEFORM.prototype.genWaves = function() {
 
 	console.log('genWaves')
 
-	var result, waves, temp, i
+	var result, waves, wave, i
 
-	result = (this.waveform.length / this.lines)
+	var lines = (this.width / (this.gutter + this.barWidth) )
+
+	//var lines = (this.width - )
+
+	result = Math.round(this.waveform.length / lines)
+
 	waves = []
-	temp = 0
+	wave = 0
 
 	for(i=0; i<this.waveform.length; i+=1) {
 
-		temp += this.waveform[i]
+		wave += this.waveform[i]
 
 		if(i%result === 0 && i !== 0) {
-			waves.push(temp/result)
-			temp = 0
-		}
-	}
-	return waves
-}
+			waves.push(wave/result)
+			wave = 0
 
+		}
+
+	}
+	return this.waves = waves
+}
 
 var example = require('./example')(WAVEFORM)
