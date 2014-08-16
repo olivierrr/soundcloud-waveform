@@ -19,3 +19,5 @@ todo:
 
 	* better constructor
 
+	* destroy method
+

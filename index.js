@@ -1,5 +1,8 @@
 var WAVEFORM = function(options) {
 
+	// unique ID
+	this.id = Math.floor((Math.random() * 10000) + 1);
+
 	this.canvas = document.createElement('canvas')
 
 	this.container = options.container
@@ -13,12 +16,19 @@ var WAVEFORM = function(options) {
 	this.gutter = options.gutter || 1
 	this.barWidth = options.barWidth || 3
 
+	// 0 = out of focus // 1 = onfocus and playing // 2 = onfocus and paused
+	this.state = 0
+
 }
 
 WAVEFORM.prototype.init = function() {
 
 	console.log('init')
+
+	// set ID
+	this.canvas.setAttribute('data-w', this.id)
 	
+	// set canvas height and width
 	this.canvas.width = this.width
 	this.canvas.height = this.height
 
@@ -36,11 +46,30 @@ WAVEFORM.prototype.init = function() {
 	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
 	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
 
+	//bind event handlers
+	this.bindEventHandlers()
+
 	//parse waveform
 	this.genWaves()
 
 	//render
 	this.draw()
+
+}
+
+WAVEFORM.prototype.destroy = function() {
+	//todo
+}
+
+WAVEFORM.prototype.bindEventHandlers = function() {
+
+	this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this))
+}
+
+WAVEFORM.prototype.onMouseDown = function(e) {
+
+	var x = e.x - this.canvas.offsetLeft
+	var y = e.y - this.canvas.offsetTop
 
 }
 
@@ -135,8 +164,6 @@ WAVEFORM.prototype.draw = function() {
 WAVEFORM.prototype.genWaves = function() {
 
 	console.log('genWaves')
-
-	//Math.floor(-Math.abs(my.waves[i]*100))
 
 	var result, waves, wave, i
 
