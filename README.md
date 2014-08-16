@@ -10,8 +10,10 @@ npm run dev
 
 todo:
 -----
+
+	* better names!
 	
-	* event handling
+	* refactor event handling
 
 	* inherit default values
 

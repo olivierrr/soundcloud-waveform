@@ -19,7 +19,7 @@ var WAVEFORM = function(options) {
 	// active = highlighted secion of track
 	this.active = 0
 
-	//
+	// slected = dimmer highlighted slections
 	this.selected = 0
 
 	// mouse dragging
@@ -32,7 +32,7 @@ var WAVEFORM = function(options) {
 
 WAVEFORM.prototype.init = function() {
 
-	console.log('init')
+	console.log(this.id + ' init')
 
 	// set ID
 	this.canvas.setAttribute('data-w', this.id)
@@ -83,11 +83,14 @@ WAVEFORM.prototype.onMouseOut = function(e) {
 	this.draw()
 }
 
+WAVEFORM.prototype.onMouseUp = function(e) {
+	this.isDragging = false
+}
+
 WAVEFORM.prototype.onMouseOver = function(e) {
 
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
-
 
 	// it's a bit off
 	var barClicked = Math.round( x / (this.barWidth + this.gutter) ) - ( (this.barWidth + this.gutter) / 2.5 )
@@ -95,11 +98,11 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 	if(this.isDragging === true) {
 		this.selected = 0
 		this.active = barClicked
-		this.draw()
-		return
-	}
+	} 
 
-	this.selected = barClicked
+	else {
+		this.selected = barClicked
+	}
 
 	this.draw()
 
@@ -120,24 +123,18 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 	this.draw()
 }
 
-WAVEFORM.prototype.onMouseUp = function(e) {
-	this.isDragging = false
-}
-
 WAVEFORM.prototype.update = function(options) {
 
-	console.log('update')
+	console.log(this.id + ' update')
 
 	if(options) {
 
 		if(options.gutter) {
 			this.gutter = options.gutter
-			this.genWaves()
 		}
 
 		if(options.barWidth) {
 			this.barWidth = options.barWidth
-			this.genWaves()
 		}
 
 		if(options.gradient) console.log('awdwd')
@@ -145,13 +142,11 @@ WAVEFORM.prototype.update = function(options) {
 		if(options.width) {
 			this.width = options.width
 			this.canvas.width = this.width
-			this.genWaves()
 		}
 
 		if(options.height) {
 			this.height = options.height
 			this.canvas.height = this.height
-			this.genWaves()
 		}
 
 		if(options.reflection === false || options.reflection === true) {
@@ -159,6 +154,8 @@ WAVEFORM.prototype.update = function(options) {
 		}
 
 	}
+
+	if(options.gutter || options.barWidth || options.width || options.height) this.genWaves()
 
 	//render
 	this.draw()
@@ -178,47 +175,45 @@ WAVEFORM.prototype.color = function(name, colors) {
 
 WAVEFORM.prototype.draw = function() {
 
-	console.log('draw')
-
-	var my = this
+	console.log(this.id + ' draw')
 
 	var xPos = 0
 	var yPos = 100
 
 	// clear canvas for redraw
-	my.ctx.clearRect ( 0 , 0 , my.width , my.height );
+	this.ctx.clearRect ( 0 , 0 , this.width , this.height );
 	
 	// itterate waves
-	for(var i=0; i<my.waves.length; i+=1) {
+	for(var i=0; i<this.waves.length; i+=1) {
 
 		// main bar
-		my.ctx.fillStyle = my.colors['bar']
-		if(this.active > i) my.ctx.fillStyle = my.colors['bar-active']
+		this.ctx.fillStyle = this.colors['bar']
+		if(this.active > i) this.ctx.fillStyle = this.colors['bar-active']
 
 		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
-			my.ctx.fillStyle = my.colors['bar-selected']
+			this.ctx.fillStyle = this.colors['bar-selected']
 		}
 
-		my.ctx.fillRect(xPos, yPos, my.barWidth, my.waves[i])
+		this.ctx.fillRect(xPos, yPos, this.barWidth, this.waves[i])
 
 		// gutter
-		my.ctx.fillStyle = my.colors['gutter']
-		if(this.active > i) my.ctx.fillStyle = my.colors['gutter-active']
+		this.ctx.fillStyle = this.colors['gutter']
+		if(this.active > i) this.ctx.fillStyle = this.colors['gutter-active']
 
 		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
-			my.ctx.fillStyle = my.colors['gutter-selected']
+			this.ctx.fillStyle = this.colors['gutter-selected']
 		}
 
-		var smallerBar = Math.max(my.waves[i],my.waves[i+1])
-		my.ctx.fillRect(xPos + my.barWidth, yPos, my.gutter, smallerBar)
+		var smallerBar = Math.max(this.waves[i],this.waves[i+1])
+		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, smallerBar)
 
 		// bar reflection
-		if(my.reflection === true) {
-			my.ctx.fillStyle = '#999999'
-			my.ctx.fillRect(xPos, yPos, my.barWidth, Math.abs(my.waves[i])*0.4)
+		if(this.reflection === true) {
+			this.ctx.fillStyle = '#999999'
+			this.ctx.fillRect(xPos, yPos, this.barWidth, Math.abs(this.waves[i])*0.4)
 		}
 
-		xPos += my.barWidth + my.gutter
+		xPos += this.barWidth + this.gutter
 	}
 
 }
@@ -226,7 +221,7 @@ WAVEFORM.prototype.draw = function() {
 // need more accurate algo
 WAVEFORM.prototype.genWaves = function() {
 
-	console.log('genWaves')
+	console.log(this.id + ' genWaves')
 
 	var result, waves, wave, i
 

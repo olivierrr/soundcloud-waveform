@@ -36,13 +36,18 @@ module.exports = function(WAVEFORM) {
 	window.a.init()
 	window.o.init()
 
+	var derp = document.querySelectorAll('canvas')
+	for(var i=0; i<derp.length; i++) {
+		derp[i].style.border = 'solid 1px #d1d1d1'
+	}
+
+
 	datGui()
 }
 
 function newDiv() {
 	div = document.createElement('div')
 	document.body.appendChild(div)
-
 	return div
 }
 
