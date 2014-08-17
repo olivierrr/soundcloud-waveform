@@ -1,10 +1,5 @@
 var WAVEFORM = function(options) {
 
-	// unique ID
-	this.id = Math.floor((Math.random() * 10000) + 1);
-
-	this.canvas = document.createElement('canvas')
-
 	this.container = options.container
 	this.height = options.height || 100
 	this.width = options.width || 300
@@ -16,11 +11,17 @@ var WAVEFORM = function(options) {
 	this.gutter = options.gutter || 1
 	this.barWidth = options.barWidth || 3
 
+	// unique ID
+	this.id = Math.floor((Math.random() * 10000) + 1);
+
+	// canvas node
+	this.canvas = document.createElement('canvas')
+
 	// active = highlighted secion of track
-	this.active = 0
+	this.active = -1
 
 	// slected = dimmer highlighted slections
-	this.selected = 0
+	this.selected = -1
 
 	// mouse dragging
 	this.isDragging = false
@@ -59,7 +60,7 @@ WAVEFORM.prototype.init = function() {
 	this.bindEventHandlers()
 
 	//parse waveform
-	this.genWaves()
+	this.cache()
 
 	//render
 	this.draw()
@@ -79,7 +80,7 @@ WAVEFORM.prototype.bindEventHandlers = function() {
 }
 
 WAVEFORM.prototype.onMouseOut = function(e) {
-	this.selected = 0	
+	this.selected = -1
 	this.draw()
 }
 
@@ -96,7 +97,7 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 	var barClicked = Math.round( x / (this.barWidth + this.gutter) ) - ( (this.barWidth + this.gutter) / 2.5 )
 
 	if(this.isDragging === true) {
-		this.selected = 0
+		this.selected = -1
 		this.active = barClicked
 	} 
 
@@ -153,7 +154,7 @@ WAVEFORM.prototype.update = function(options) {
 
 	}
 
-	if(options.gutter || options.barWidth || options.width || options.height) this.genWaves()
+	if(options.gutter || options.barWidth || options.width || options.height) this.cache()
 
 	//render
 	this.draw()
@@ -190,7 +191,7 @@ WAVEFORM.prototype.draw = function() {
 		this.ctx.fillStyle = this.colors['bar']
 		if(this.active > i) this.ctx.fillStyle = this.colors['bar-active']
 
-		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
+		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
 			this.ctx.fillStyle = this.colors['bar-selected']
 		}
 		this.ctx.fillRect(xPos, yPos, this.barWidth, this.waves[i])
@@ -200,7 +201,7 @@ WAVEFORM.prototype.draw = function() {
 		this.ctx.fillStyle = this.colors['gutter']
 		if(this.active > i) this.ctx.fillStyle = this.colors['gutter-active']
 
-		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
+		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
 			this.ctx.fillStyle = this.colors['gutter-selected']
 		}
 		smallerBar = Math.max(this.waves[i],this.waves[i+1])
@@ -219,10 +220,10 @@ WAVEFORM.prototype.draw = function() {
 
 }
 
-// need more accurate algo
-WAVEFORM.prototype.genWaves = function() {
+// parse and cache array of points
+WAVEFORM.prototype.cache = function() {
 
-	console.log(this.id + ' genWaves')
+	console.log(this.id + ' cache')
 
 	var result, waves, wave, i
 
@@ -240,10 +241,10 @@ WAVEFORM.prototype.genWaves = function() {
 		if(i%result === 0 && i !== 0) {
 
 			wave = (wave/result)
-
 			wave = Math.floor(-Math.abs(wave*100))
 
 			waves.push(wave)
+
 			wave = 0
 
 		}
