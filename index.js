@@ -9,7 +9,7 @@ var WAVEFORM = function(options) {
 	this.height = options.height || 100
 	this.width = options.width || 300
 	this.waveform = options.waveform
-	this.reflection = options.reflection || null
+	this.reflection = options.reflection || 0
 
 	this.colors = {}
 
@@ -137,8 +137,6 @@ WAVEFORM.prototype.update = function(options) {
 			this.barWidth = options.barWidth
 		}
 
-		if(options.gradient) console.log('awdwd')
-
 		if(options.width) {
 			this.width = options.width
 			this.canvas.width = this.width
@@ -149,7 +147,7 @@ WAVEFORM.prototype.update = function(options) {
 			this.canvas.height = this.height
 		}
 
-		if(options.reflection === false || options.reflection === true) {
+		if(options.reflection == 0 || options.reflection) {
 			this.reflection = options.reflection
 		}
 
@@ -177,8 +175,10 @@ WAVEFORM.prototype.draw = function() {
 
 	console.log(this.id + ' draw')
 
-	var xPos = 0
-	var yPos = 100
+	var smallerBar, xPos, yPos
+
+	xPos = 0
+	yPos = 100
 
 	// clear canvas for redraw
 	this.ctx.clearRect ( 0 , 0 , this.width , this.height );
@@ -193,8 +193,8 @@ WAVEFORM.prototype.draw = function() {
 		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
 			this.ctx.fillStyle = this.colors['bar-selected']
 		}
-
 		this.ctx.fillRect(xPos, yPos, this.barWidth, this.waves[i])
+
 
 		// gutter
 		this.ctx.fillStyle = this.colors['gutter']
@@ -203,15 +203,16 @@ WAVEFORM.prototype.draw = function() {
 		if(this.selected !== 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
 			this.ctx.fillStyle = this.colors['gutter-selected']
 		}
-
-		var smallerBar = Math.max(this.waves[i],this.waves[i+1])
+		smallerBar = Math.max(this.waves[i],this.waves[i+1])
 		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, smallerBar)
 
+
 		// bar reflection
-		if(this.reflection === true) {
+		if(this.reflection > 0) {
 			this.ctx.fillStyle = '#999999'
-			this.ctx.fillRect(xPos, yPos, this.barWidth, Math.abs(this.waves[i])*0.4)
+			this.ctx.fillRect(xPos, yPos, this.barWidth, Math.abs(this.waves[i]) * this.reflection)
 		}
+
 
 		xPos += this.barWidth + this.gutter
 	}

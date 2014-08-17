@@ -8,7 +8,7 @@ module.exports = function(WAVEFORM) {
 	    height: 200,
 	    width: 800,
 	    lines: 100,
-	    reflection: true,
+	    reflection: 0.50,
 	    barWidth: 2
 	})
 
@@ -18,7 +18,7 @@ module.exports = function(WAVEFORM) {
 	    height: 200,
 	    width: 800,
 	    lines: 100,
-	    reflection: true,
+	    reflection: 0.50,
 	    barWidth: 2
 	})
 
@@ -28,7 +28,7 @@ module.exports = function(WAVEFORM) {
 	    height: 200,
 	    width: 800,
 	    lines: 100,
-	    reflection: true,
+	    reflection: 0.50,
 	    barWidth: 2
 	})
 
@@ -57,7 +57,7 @@ var gui_ = function() {
 	this.heigth = 200;
 	this.gutter = 1;
 	this.barWidth = 2;
-	this.reflection = true;
+	this.reflection = 0.5;
 }
 
 
@@ -73,7 +73,7 @@ function datGui() {
 
 	var barWidth = gui.add(text, 'barWidth', 0, 50).step(1)
 
-	var reflection = gui.add(text, 'reflection')
+	var reflection = gui.add(text, 'reflection', 0, 1)
 
 
 	width.onChange(function(value) {
