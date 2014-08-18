@@ -48,14 +48,6 @@ WAVEFORM.prototype.init = function() {
 	// append canvas
 	this.container.appendChild(this.canvas)
 
-	//default colors
-	this.color('bar', ['#666666', 0, '#868686', 1])
-	this.color('bar-active', ['#FF3300', 0, '#FF5100', 1])
-	this.color('bar-selected', ['#993016', 0, '#973C15', 1])
-	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
-	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
-	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
-
 	//bind event handlers
 	this.bindEventHandlers()
 
@@ -126,7 +118,7 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 
 WAVEFORM.prototype.update = function(options) {
 
-	console.log(this.id + ' update')
+	//console.log(this.id + ' update')
 
 	if(options) {
 
@@ -154,7 +146,9 @@ WAVEFORM.prototype.update = function(options) {
 
 	}
 
-	if(options.gutter || options.barWidth || options.width || options.height) this.cache()
+	if(options.height || (options.reflection || options.reflection === 0)) 
+
+	if(options.gutter || options.barWidth || options.width || options.height || (options.reflection || options.reflection === 0)) this.cache()
 
 	//render
 	this.draw()
@@ -163,7 +157,7 @@ WAVEFORM.prototype.update = function(options) {
 // 'experimental'
 WAVEFORM.prototype.color = function(name, colors) {
 
-	var gradient = this.ctx.createLinearGradient(0,100,0,0)
+	var gradient = this.ctx.createLinearGradient(0,this.waveOffset,0,0)
 
 	for(var i=0; i<colors.length; i+=2) {
 		gradient.addColorStop(colors[i+1], colors[i])
@@ -172,14 +166,25 @@ WAVEFORM.prototype.color = function(name, colors) {
 	this.colors[name] = gradient
 }
 
+WAVEFORM.prototype.addColors = function() {
+
+	//default colors
+	this.color('bar', ['#666666', 0, '#868686', 1])
+	this.color('bar-active', ['#FF3300', 0, '#FF5100', 1])
+	this.color('bar-selected', ['#993016', 0, '#973C15', 1])
+	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
+	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
+	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
+}
+
 WAVEFORM.prototype.draw = function() {
 
-	console.log(this.id + ' draw')
+	//console.log(this.id + ' draw')
 
 	var smallerBar, xPos, yPos
 
 	xPos = 0
-	yPos = 100
+	yPos = this.waveOffset
 
 	// clear canvas for redraw
 	this.ctx.clearRect ( 0 , 0 , this.width , this.height );
@@ -210,8 +215,11 @@ WAVEFORM.prototype.draw = function() {
 
 		// bar reflection
 		if(this.reflection > 0) {
+
+			var reflH =  (Math.abs(this.waves[i]) / this.waveHeight)
+
 			this.ctx.fillStyle = '#999999'
-			this.ctx.fillRect(xPos, yPos, this.barWidth, Math.abs(this.waves[i]) * this.reflection)
+			this.ctx.fillRect(xPos, yPos, this.barWidth, reflH)
 		}
 
 
@@ -220,14 +228,24 @@ WAVEFORM.prototype.draw = function() {
 
 }
 
+//TODO refactor
 // parse and cache array of points
 WAVEFORM.prototype.cache = function() {
 
-	console.log(this.id + ' cache')
+	var result, waves, wave, i, lines
 
-	var result, waves, wave, i
+	this.waveOffset = Math.floor( this.height  - (this.height * this.reflection) )
 
-	var lines = (this.width / (this.gutter + this.barWidth) )
+	this.reflectionHeight = Math.floor( this.height - this.waveOffset )
+
+	this.waveHeight = Math.floor( this.height - this.reflectionHeight )
+
+	this.addColors()
+
+	// console.log('waveOffset: ' + this.waveOffset )
+	// console.log(' waveHeight: ' + this.waveHeight + ' reflectionHeight: ' + this.reflectionHeight + '  = ' + (this.waveHeight + this.reflectionHeight) )
+
+	lines = (this.width / (this.gutter + this.barWidth) )
 
 	result = Math.round(this.waveform.length / lines)
 
@@ -241,7 +259,7 @@ WAVEFORM.prototype.cache = function() {
 		if(i%result === 0 && i !== 0) {
 
 			wave = (wave/result)
-			wave = Math.floor(-Math.abs(wave*100))
+			wave = Math.floor(-Math.abs(wave * this.waveHeight))
 
 			waves.push(wave)
 
