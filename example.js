@@ -9,7 +9,7 @@ module.exports = function(WAVEFORM) {
 	    width: 800,
 	    lines: 100,
 	    reflection: 0.3,
-	    barWidth: 2
+	    waveWidth: 2
 	})
 
 	window.a = new WAVEFORM({
@@ -19,7 +19,7 @@ module.exports = function(WAVEFORM) {
 	    width: 800,
 	    lines: 100,
 	    reflection: 0.3,
-	    barWidth: 2
+	    waveWidth: 2
 	})
 
 	window.o = new WAVEFORM({
@@ -29,7 +29,7 @@ module.exports = function(WAVEFORM) {
 	    width: 800,
 	    lines: 100,
 	    reflection: 0.3,
-	    barWidth: 2
+	    waveWidth: 2
 	})
 
 	window.u.init()
@@ -56,7 +56,7 @@ var gui_ = function() {
 	this.width = 800;
 	this.heigth = 200;
 	this.gutter = 1;
-	this.barWidth = 2;
+	this.waveWidth = 2;
 	this.reflection = 0;
 }
 
@@ -71,7 +71,7 @@ function datGui() {
 
 	var gutter = gui.add(text, 'gutter', 0, 10).step(1)
 
-	var barWidth = gui.add(text, 'barWidth', 0, 50).step(1)
+	var waveWidth = gui.add(text, 'waveWidth', 0, 50).step(1)
 
 	var reflection = gui.add(text, 'reflection', 0, 0.5)
 
@@ -88,8 +88,8 @@ function datGui() {
 		window.o.update({gutter: value})
 	})
 
-	barWidth.onChange(function(value) {
-		window.o.update({barWidth: value})
+	waveWidth.onChange(function(value) {
+		window.o.update({waveWidth: value})
 	})
 
 	reflection.onChange(function(value) {

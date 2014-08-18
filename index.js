@@ -9,7 +9,7 @@ var WAVEFORM = function(options) {
 	this.colors = {}
 
 	this.gutter = options.gutter || 1
-	this.barWidth = options.barWidth || 3
+	this.waveWidth = options.waveWidth || 3
 
 	// unique ID
 	this.id = Math.floor((Math.random() * 10000) + 1);
@@ -26,17 +26,20 @@ var WAVEFORM = function(options) {
 	// mouse dragging
 	this.isDragging = false
 
-	// 0 = out of focus // 1 = onfocus and playing // 2 = onfocus and paused
-	this.state = 0
+	// is playing
+	this.isPlaying = false
+
+	// is in focus
+	this.isFocus = false
 
 }
 
 WAVEFORM.prototype.init = function() {
 
-	console.log(this.id + ' init')
+	//console.log(this.id + ' init')
 
 	// set ID
-	this.canvas.setAttribute('data-w', this.id)
+	this.canvas.setAttribute('data-waveform-id', this.id)
 	
 	// set canvas height and width
 	this.canvas.width = this.width
@@ -85,16 +88,15 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
-	// it's a bit off
-	var barClicked = Math.round( x / (this.barWidth + this.gutter) ) - ( (this.barWidth + this.gutter) / 2.5 )
+	var waveClicked = Math.round( x / (this.waveWidth + this.gutter) )
 
 	if(this.isDragging === true) {
 		this.selected = -1
-		this.active = barClicked
+		this.active = waveClicked
 	} 
 
 	else {
-		this.selected = barClicked
+		this.selected = waveClicked
 	}
 
 	this.draw()
@@ -103,15 +105,16 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 
 WAVEFORM.prototype.onMouseDown = function(e) {
 
+
+
 	this.isDragging = true
 
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
-	// it's a bit off
-	var barClicked = Math.round( x / (this.barWidth + this.gutter) ) - ( (this.barWidth + this.gutter) / 2.5 )
+	var waveClicked = Math.round( x / (this.waveWidth + this.gutter) )
 
-	this.active = barClicked
+	this.active = waveClicked
 
 	this.draw()
 }
@@ -126,14 +129,13 @@ WAVEFORM.prototype.update = function(options) {
 			this.gutter = options.gutter
 		}
 
-		if(options.barWidth) {
-			this.barWidth = options.barWidth
+		if(options.waveWidth) {
+			this.waveWidth = options.waveWidth
 		}
 
 		if(options.width) {
 			this.width = options.width
 			this.canvas.width = this.width
-			console.log('dddd')
 		}
 
 		if(options.height) {
@@ -145,9 +147,10 @@ WAVEFORM.prototype.update = function(options) {
 			this.reflection = options.reflection
 		}
 
+		if(options.gutter || options.waveWidth || options.width || options.height || (options.reflection || options.reflection === 0)) {
+			this.cache()
+		}
 	}
-
-	if(options.gutter || options.barWidth || options.width || options.height || (options.reflection || options.reflection === 0)) this.cache()
 
 	//render
 	this.draw()
@@ -169,10 +172,10 @@ WAVEFORM.prototype.addColors = function() {
 
 	//default colors
 
-	this.color('bar-focus', ['#333333', 0, '#333333', 1])
-	this.color('bar', ['#666666', 0, '#868686', 1])
-	this.color('bar-active', ['#FF3300', 0, '#FF5100', 1])
-	this.color('bar-selected', ['#993016', 0, '#973C15', 1])
+	this.color('wave-focus', ['#333333', 0, '#333333', 1])
+	this.color('wave', ['#666666', 0, '#868686', 1])
+	this.color('wave-active', ['#FF3300', 0, '#FF5100', 1])
+	this.color('wave-selected', ['#993016', 0, '#973C15', 1])
 
 	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
 	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
@@ -186,62 +189,62 @@ WAVEFORM.prototype.draw = function() {
 
 	//console.log(this.id + ' draw')
 
-	var smallerBar, xPos, yPos
+	var gutter, xPos, yPos
 
 	xPos = 0
 	yPos = this.waveOffset
 
+
+
 	// clear canvas for redraw
 	this.ctx.clearRect ( 0 , 0 , this.width , this.height );
 	
-	// itterate waves
+	// itterate waves 
 	for(var i=0; i<this.waves.length; i+=1) {
 
-		// main bar
-		this.ctx.fillStyle = this.colors['bar-focus']
-		if(this.active > i) this.ctx.fillStyle = this.colors['bar-active']
+		// wave
+		this.ctx.fillStyle = this.colors['wave-focus']
+		if(this.active > i) this.ctx.fillStyle = this.colors['wave-active']
 
-		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
-			this.ctx.fillStyle = this.colors['bar-selected']
+		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i >= this.active)) {
+			this.ctx.fillStyle = this.colors['wave-selected']
 		}
-		this.ctx.fillRect(xPos, yPos, this.barWidth, this.waves[i])
+		// draw wave
+		this.ctx.fillRect(xPos, yPos, this.waveWidth, this.waves[i])
 
 
 		// gutter
 		this.ctx.fillStyle = this.colors['gutter']
 		if(this.active > i) this.ctx.fillStyle = this.colors['gutter-active']
 
-		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
+		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i >= this.active)) {
 			this.ctx.fillStyle = this.colors['gutter-selected']
 		}
-		smallerBar = Math.max(this.waves[i],this.waves[i+1])
-		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, smallerBar)
+		gutter = Math.max(this.waves[i],this.waves[i+1])
+		// draw gutter
+		this.ctx.fillRect(xPos + this.waveWidth, yPos, this.gutter, gutter)
 
 
-		// reflection bar
+		// reflection wave
 		if(this.reflection > 0) {
 
-			// bar reflection
-			var reflH =  (Math.abs(this.waves[i]) / (1 - this.reflection) ) * this.reflection
-			//(Math.abs(this.waves[i]) / this.waveHeight)
+			var reflectionHeight =  (Math.abs(this.waves[i]) / (1 - this.reflection) ) * this.reflection
 
 			if(this.active > i) this.ctx.fillStyle = this.colors['reflection-active']
 			else this.ctx.fillStyle = this.colors['reflection']
 
-			this.ctx.fillRect(xPos, yPos, this.barWidth, reflH)
+			// draw reflection
+			this.ctx.fillRect(xPos, yPos, this.waveWidth, reflectionHeight)
 		}
 
 
-		xPos += this.barWidth + this.gutter
+		xPos += this.waveWidth + this.gutter
 	}
-
 }
 
 //TODO refactor
 // parse and cache array of points
 WAVEFORM.prototype.cache = function() {
-
-	console.log('awdadawdawdwda')
 
 	var result, waves, wave, i, lines
 
@@ -256,7 +259,7 @@ WAVEFORM.prototype.cache = function() {
 	// console.log('waveOffset: ' + this.waveOffset )
 	// console.log(' waveHeight: ' + this.waveHeight + ' reflectionHeight: ' + this.reflectionHeight + '  = ' + (this.waveHeight + this.reflectionHeight) )
 
-	lines = (this.width / (this.gutter + this.barWidth) )
+	lines = (this.width / (this.gutter + this.waveWidth) )
 
 	result = Math.round(this.waveform.length / lines)
 
@@ -277,7 +280,6 @@ WAVEFORM.prototype.cache = function() {
 			wave = 0
 
 		}
-
 	}
 	return this.waves = waves
 }
