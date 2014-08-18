@@ -216,7 +216,8 @@ WAVEFORM.prototype.draw = function() {
 		// bar reflection
 		if(this.reflection > 0) {
 
-			var reflH =  (Math.abs(this.waves[i]) / this.waveHeight)
+			var reflH =  (Math.abs(this.waves[i]) / (1 - this.reflection) ) * this.reflection
+			//(Math.abs(this.waves[i]) / this.waveHeight)
 
 			this.ctx.fillStyle = '#999999'
 			this.ctx.fillRect(xPos, yPos, this.barWidth, reflH)
