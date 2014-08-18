@@ -73,7 +73,7 @@ function datGui() {
 
 	var barWidth = gui.add(text, 'barWidth', 0, 50).step(1)
 
-	var reflection = gui.add(text, 'reflection', 0, 1)
+	var reflection = gui.add(text, 'reflection', 0, 0.5)
 
 
 	width.onChange(function(value) {

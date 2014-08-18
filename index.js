@@ -169,12 +169,17 @@ WAVEFORM.prototype.color = function(name, colors) {
 WAVEFORM.prototype.addColors = function() {
 
 	//default colors
+
 	this.color('bar', ['#666666', 0, '#868686', 1])
 	this.color('bar-active', ['#FF3300', 0, '#FF5100', 1])
 	this.color('bar-selected', ['#993016', 0, '#973C15', 1])
+
 	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
 	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
 	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
+
+	this.color('reflection', ['#999999', 0, '#999999', 1])
+	this.color('reflection-active', ['#FFC0A0', 0, '#FFC0A0', 1])
 }
 
 WAVEFORM.prototype.draw = function() {
@@ -213,13 +218,16 @@ WAVEFORM.prototype.draw = function() {
 		this.ctx.fillRect(xPos + this.barWidth, yPos, this.gutter, smallerBar)
 
 
-		// bar reflection
+		// reflection bar
 		if(this.reflection > 0) {
 
+			// bar reflection
 			var reflH =  (Math.abs(this.waves[i]) / (1 - this.reflection) ) * this.reflection
 			//(Math.abs(this.waves[i]) / this.waveHeight)
 
-			this.ctx.fillStyle = '#999999'
+			if(this.active > i) this.ctx.fillStyle = this.colors['reflection-active']
+			else this.ctx.fillStyle = this.colors['reflection']
+
 			this.ctx.fillRect(xPos, yPos, this.barWidth, reflH)
 		}
 
