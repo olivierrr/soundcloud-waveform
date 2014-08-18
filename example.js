@@ -8,7 +8,7 @@ module.exports = function(WAVEFORM) {
 	    height: 200,
 	    width: 800,
 	    lines: 100,
-	    reflection: 0,
+	    reflection: 0.3,
 	    barWidth: 2
 	})
 
@@ -18,7 +18,7 @@ module.exports = function(WAVEFORM) {
 	    height: 200,
 	    width: 800,
 	    lines: 100,
-	    reflection: 0,
+	    reflection: 0.3,
 	    barWidth: 2
 	})
 
@@ -28,7 +28,7 @@ module.exports = function(WAVEFORM) {
 	    height: 200,
 	    width: 800,
 	    lines: 100,
-	    reflection: 0,
+	    reflection: 0.3,
 	    barWidth: 2
 	})
 

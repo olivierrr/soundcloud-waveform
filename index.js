@@ -133,6 +133,7 @@ WAVEFORM.prototype.update = function(options) {
 		if(options.width) {
 			this.width = options.width
 			this.canvas.width = this.width
+			console.log('dddd')
 		}
 
 		if(options.height) {
@@ -145,8 +146,6 @@ WAVEFORM.prototype.update = function(options) {
 		}
 
 	}
-
-	if(options.height || (options.reflection || options.reflection === 0)) 
 
 	if(options.gutter || options.barWidth || options.width || options.height || (options.reflection || options.reflection === 0)) this.cache()
 
@@ -170,6 +169,7 @@ WAVEFORM.prototype.addColors = function() {
 
 	//default colors
 
+	this.color('bar-focus', ['#333333', 0, '#333333', 1])
 	this.color('bar', ['#666666', 0, '#868686', 1])
 	this.color('bar-active', ['#FF3300', 0, '#FF5100', 1])
 	this.color('bar-selected', ['#993016', 0, '#973C15', 1])
@@ -198,7 +198,7 @@ WAVEFORM.prototype.draw = function() {
 	for(var i=0; i<this.waves.length; i+=1) {
 
 		// main bar
-		this.ctx.fillStyle = this.colors['bar']
+		this.ctx.fillStyle = this.colors['bar-focus']
 		if(this.active > i) this.ctx.fillStyle = this.colors['bar-active']
 
 		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i > this.active)) {
@@ -240,6 +240,8 @@ WAVEFORM.prototype.draw = function() {
 //TODO refactor
 // parse and cache array of points
 WAVEFORM.prototype.cache = function() {
+
+	console.log('awdadawdawdwda')
 
 	var result, waves, wave, i, lines
 
