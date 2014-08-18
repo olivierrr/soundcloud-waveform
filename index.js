@@ -8,7 +8,7 @@ var WAVEFORM = function(options) {
 
 	this.colors = {}
 
-	this.gutter = options.gutter || 1
+	this.gutterWidth = options.gutterWidth || 1
 	this.waveWidth = options.waveWidth || 3
 
 	// unique ID
@@ -88,7 +88,7 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
-	var waveClicked = Math.round( x / (this.waveWidth + this.gutter) )
+	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) )
 
 	if(this.isDragging === true) {
 		this.selected = -1
@@ -112,7 +112,7 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
-	var waveClicked = Math.round( x / (this.waveWidth + this.gutter) )
+	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) )
 
 	this.active = waveClicked
 
@@ -125,8 +125,8 @@ WAVEFORM.prototype.update = function(options) {
 
 	if(options) {
 
-		if(options.gutter) {
-			this.gutter = options.gutter
+		if(options.gutterWidth) {
+			this.gutterWidth = options.gutterWidth
 		}
 
 		if(options.waveWidth) {
@@ -147,7 +147,7 @@ WAVEFORM.prototype.update = function(options) {
 			this.reflection = options.reflection
 		}
 
-		if(options.gutter || options.waveWidth || options.width || options.height || (options.reflection || options.reflection === 0)) {
+		if(options.gutterWidth || options.waveWidth || options.width || options.height || (options.reflection || options.reflection === 0)) {
 			this.cache()
 		}
 	}
@@ -194,8 +194,6 @@ WAVEFORM.prototype.draw = function() {
 	xPos = 0
 	yPos = this.waveOffset
 
-
-
 	// clear canvas for redraw
 	this.ctx.clearRect ( 0 , 0 , this.width , this.height );
 	
@@ -203,26 +201,45 @@ WAVEFORM.prototype.draw = function() {
 	for(var i=0; i<this.waves.length; i+=1) {
 
 		// wave
-		this.ctx.fillStyle = this.colors['wave-focus']
-		if(this.active > i) this.ctx.fillStyle = this.colors['wave-active']
 
+		// if is hovered
 		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i >= this.active)) {
 			this.ctx.fillStyle = this.colors['wave-selected']
 		}
+		// if is active
+		else if(this.active > i) {
+			this.ctx.fillStyle = this.colors['wave-active']
+		}
+		// default
+		else {
+			this.ctx.fillStyle = this.colors['wave-focus']
+		}
+
 		// draw wave
 		this.ctx.fillRect(xPos, yPos, this.waveWidth, this.waves[i])
 
 
 		// gutter
-		this.ctx.fillStyle = this.colors['gutter']
-		if(this.active > i) this.ctx.fillStyle = this.colors['gutter-active']
 
+		// if is hovered
 		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i >= this.active)) {
 			this.ctx.fillStyle = this.colors['gutter-selected']
 		}
-		gutter = Math.max(this.waves[i],this.waves[i+1])
+		// if is active
+		else if(this.active > i) {
+			this.ctx.fillStyle = this.colors['gutter-active']
+		}
+		// default
+		else {
+			this.ctx.fillStyle = this.colors['gutter']
+		}
+
+		// smallest wave between butter is gutters height
+		// note: Math.max because wave values are negative
+		gutterX = Math.max(this.waves[i],this.waves[i+1])
+
 		// draw gutter
-		this.ctx.fillRect(xPos + this.waveWidth, yPos, this.gutter, gutter)
+		this.ctx.fillRect(xPos + this.waveWidth, yPos, this.gutterWidth, gutterX)
 
 
 		// reflection wave
@@ -238,7 +255,7 @@ WAVEFORM.prototype.draw = function() {
 		}
 
 
-		xPos += this.waveWidth + this.gutter
+		xPos += this.waveWidth + this.gutterWidth
 	}
 }
 
@@ -259,7 +276,7 @@ WAVEFORM.prototype.cache = function() {
 	// console.log('waveOffset: ' + this.waveOffset )
 	// console.log(' waveHeight: ' + this.waveHeight + ' reflectionHeight: ' + this.reflectionHeight + '  = ' + (this.waveHeight + this.reflectionHeight) )
 
-	lines = (this.width / (this.gutter + this.waveWidth) )
+	lines = (this.width / (this.gutterWidth + this.waveWidth) )
 
 	result = Math.round(this.waveform.length / lines)
 

@@ -55,7 +55,7 @@ function newDiv() {
 var gui_ = function() {
 	this.width = 800;
 	this.heigth = 200;
-	this.gutter = 1;
+	this.gutterWidth = 1;
 	this.waveWidth = 2;
 	this.reflection = 0;
 }
@@ -69,7 +69,7 @@ function datGui() {
 
 	var height = gui.add(text, 'heigth', 0, 300).step(1)
 
-	var gutter = gui.add(text, 'gutter', 0, 10).step(1)
+	var gutterWidth = gui.add(text, 'gutterWidth', 0, 10).step(1)
 
 	var waveWidth = gui.add(text, 'waveWidth', 0, 50).step(1)
 
@@ -84,8 +84,8 @@ function datGui() {
 		window.o.update({height: value})
 	})
 
-	gutter.onChange(function(value) {
-		window.o.update({gutter: value})
+	gutterWidth.onChange(function(value) {
+		window.o.update({gutterWidth: value})
 	})
 
 	waveWidth.onChange(function(value) {
