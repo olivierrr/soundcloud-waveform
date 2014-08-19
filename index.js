@@ -219,7 +219,7 @@ WAVEFORM.prototype.draw = function() {
 		// wave
 
 		// if is hovered
-		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i >= this.active)) {
+		if(this.selected > 0 && (this.selected <= i && i < this.active) || (this.selected > i && i >= this.active)) {
 			this.ctx.fillStyle = this.colors['wave-selected']
 		}
 		// if is active
@@ -238,7 +238,7 @@ WAVEFORM.prototype.draw = function() {
 		// gutter
 
 		// if is hovered
-		if(this.selected > 0 && (this.selected < i && i < this.active) || (this.selected > i && i >= this.active)) {
+		if(this.selected > 0 && (this.selected <= i && i < this.active) || (this.selected > i && i >= this.active)) {
 			this.ctx.fillStyle = this.colors['gutter-selected']
 		}
 		// if is active
