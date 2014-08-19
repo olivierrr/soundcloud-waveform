@@ -75,11 +75,14 @@ WAVEFORM.prototype.bindEventHandlers = function() {
 }
 
 WAVEFORM.prototype.onMouseOut = function(e) {
+
 	this.selected = -1
+
 	this.draw()
 }
 
 WAVEFORM.prototype.onMouseUp = function(e) {
+
 	this.isDragging = false
 }
 
@@ -110,7 +113,7 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 	var x = e.x - this.canvas.offsetLeft
 	var y = e.y - this.canvas.offsetTop
 
-	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) )
+	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) ) 
 
 	this.active = waveClicked
 
@@ -145,6 +148,7 @@ WAVEFORM.prototype.update = function(options) {
 			this.reflection = options.reflection
 		}
 
+		// if 1 or more of these is actived, recalc and cache
 		if(options.gutterWidth || options.waveWidth || options.width || options.height || (options.reflection || options.reflection === 0)) {
 			this.cache()
 		}
@@ -161,7 +165,6 @@ WAVEFORM.prototype.setGradient = function(name, colors) {
 	for(var i=0; i<colors.length; i+=2) {
 		gradient.addColorStop(colors[i+1], colors[i])
 	}
-
 
 	this.colors[name] = gradient
 }
@@ -265,7 +268,7 @@ WAVEFORM.prototype.draw = function() {
 // parse and cache array of points
 WAVEFORM.prototype.cache = function() {
 
-	var result, waves, wave, i, lines
+	var wavesPerWave, waves, wave, i, waveCount
 
 	this.waveOffset = Math.floor( this.height  - (this.height * this.reflection) )
 
@@ -278,9 +281,9 @@ WAVEFORM.prototype.cache = function() {
 	// console.log('waveOffset: ' + this.waveOffset )
 	// console.log(' waveHeight: ' + this.waveHeight + ' reflectionHeight: ' + this.reflectionHeight + '  = ' + (this.waveHeight + this.reflectionHeight) )
 
-	lines = (this.width / (this.gutterWidth + this.waveWidth) )
+	waveCount = (this.width / (this.gutterWidth + this.waveWidth) )
 
-	result = Math.round(this.waveform.length / lines)
+	wavesPerWave = (this.waveform.length / waveCount)
 
 	waves = []
 	wave = 0
@@ -289,9 +292,9 @@ WAVEFORM.prototype.cache = function() {
 
 		wave += this.waveform[i]
 
-		if(i%result === 0 && i !== 0) {
+		if(i%wavesPerWave === 0 && i !== 0) {
 
-			wave = (wave/result)
+			wave = (wave/wavesPerWave)
 			wave = Math.floor(-Math.abs(wave * this.waveHeight))
 
 			waves.push(wave)
@@ -300,6 +303,7 @@ WAVEFORM.prototype.cache = function() {
 
 		}
 	}
+
 	return this.waves = waves
 }
 
