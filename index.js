@@ -1,5 +1,9 @@
 var WAVEFORM = function(options) {
 
+	if(!options.container) {
+		throw new Error('waveform needs a container')
+	}
+
 	this.container = options.container
 	this.height = options.height || 100
 	this.width = options.width || 300
@@ -88,7 +92,7 @@ WAVEFORM.prototype.onMouseUp = function(e) {
 
 WAVEFORM.prototype.onMouseOver = function(e) {
 
-	var x = e.x - this.canvas.offsetLeft
+	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
 	var y = e.y - this.canvas.offsetTop
 
 	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) )
@@ -110,7 +114,7 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 
 	this.isDragging = true
 
-	var x = e.x - this.canvas.offsetLeft
+	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
 	var y = e.y - this.canvas.offsetTop
 
 	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) ) 
@@ -196,7 +200,7 @@ WAVEFORM.prototype.draw = function() {
 
 	var gutter, xPos, yPos
 
-	xPos = 0
+	xPos = this.paddingLeft
 	yPos = this.waveOffset
 
 	// clear canvas for redraw
@@ -281,9 +285,9 @@ WAVEFORM.prototype.cache = function() {
 	// console.log('waveOffset: ' + this.waveOffset )
 	// console.log(' waveHeight: ' + this.waveHeight + ' reflectionHeight: ' + this.reflectionHeight + '  = ' + (this.waveHeight + this.reflectionHeight) )
 
-	waveCount = (this.width / (this.gutterWidth + this.waveWidth) )
+	waveCount = Math.ceil( this.width / (this.gutterWidth + this.waveWidth) )
 
-	wavesPerWave = (this.waveform.length / waveCount)
+	wavesPerWave = Math.ceil(this.waveform.length / waveCount)
 
 	waves = []
 	wave = 0
@@ -303,6 +307,9 @@ WAVEFORM.prototype.cache = function() {
 
 		}
 	}
+
+	this.paddingLeft = Math.floor((this.width - ((this.gutterWidth + this.waveWidth)*waves.length))/2)
+	this.paddingRight = Math.ceil((this.width - ((this.gutterWidth + this.waveWidth)*waves.length))/2)
 
 	return this.waves = waves
 }
