@@ -58,6 +58,9 @@ WAVEFORM.prototype.init = function() {
 	//bind event handlers
 	this.bindEventHandlers()
 
+	//calc height
+	this.updateHeight()
+
 	//parse waveform
 	this.cache()
 
@@ -155,6 +158,10 @@ WAVEFORM.prototype.update = function(options) {
 		// if 1 or more of these is actived, recalc and cache
 		if(options.gutterWidth || options.waveWidth || options.width || options.height || (options.reflection || options.reflection === 0)) {
 			this.cache()
+		}
+
+		if(options.height || (options.reflection || options.reflection === 0)) {
+			this.updateHeight()
 		}
 	}
 
@@ -268,11 +275,7 @@ WAVEFORM.prototype.draw = function() {
 	}
 }
 
-//TODO refactor
-// parse and cache array of points
-WAVEFORM.prototype.cache = function() {
-
-	var wavesPerWave, waves, wave, i, waveCount
+WAVEFORM.prototype.updateHeight = function(first_argument) {
 
 	this.waveOffset = Math.floor( this.height  - (this.height * this.reflection) )
 
@@ -281,6 +284,13 @@ WAVEFORM.prototype.cache = function() {
 	this.waveHeight = Math.floor( this.height - this.reflectionHeight )
 
 	this.addColors()
+}
+
+//TODO refactor
+// parse and cache array of points
+WAVEFORM.prototype.cache = function() {
+
+	var wavesPerWave, waves, wave, i, waveCount
 
 	// console.log('waveOffset: ' + this.waveOffset )
 	// console.log(' waveHeight: ' + this.waveHeight + ' reflectionHeight: ' + this.reflectionHeight + '  = ' + (this.waveHeight + this.reflectionHeight) )
