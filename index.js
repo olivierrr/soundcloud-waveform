@@ -17,7 +17,7 @@ var WAVEFORM = function(options) {
 	// canvas node
 	this.canvas = document.createElement('canvas')
 
-	// active = highlighted secion of track
+	// active = highlighted section of track
 	this.active = -1
 
 	// slected = dimmer highlighted slections
@@ -40,7 +40,7 @@ WAVEFORM.prototype.init = function() {
 
 	// set ID
 	this.canvas.setAttribute('data-waveform-id', this.id)
-	
+
 	// set canvas height and width
 	this.canvas.width = this.width
 	this.canvas.height = this.height
@@ -93,7 +93,7 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 	if(this.isDragging === true) {
 		this.selected = -1
 		this.active = waveClicked
-	} 
+	}
 
 	else {
 		this.selected = waveClicked
@@ -104,8 +104,6 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 }
 
 WAVEFORM.prototype.onMouseDown = function(e) {
-
-
 
 	this.isDragging = true
 
@@ -157,32 +155,36 @@ WAVEFORM.prototype.update = function(options) {
 }
 
 // 'experimental'
-WAVEFORM.prototype.color = function(name, colors) {
+WAVEFORM.prototype.setGradient = function(name, colors) {
 
 	var gradient = this.ctx.createLinearGradient(0,this.waveOffset,0,0)
-
 	for(var i=0; i<colors.length; i+=2) {
 		gradient.addColorStop(colors[i+1], colors[i])
 	}
 
+
 	this.colors[name] = gradient
+}
+
+WAVEFORM.prototype.setColor = function(name, color) {
+	
+	this.colors[name] = color
 }
 
 WAVEFORM.prototype.addColors = function() {
 
 	//default colors
+	this.setColor('wave-focus', '#333333')
+	this.setGradient('wave', ['#666666', 0, '#868686', 1])
+	this.setGradient('wave-active', ['#FF3300', 0, '#FF5100', 1])
+	this.setGradient('wave-selected', ['#993016', 0, '#973C15', 1])
 
-	this.color('wave-focus', ['#333333', 0, '#333333', 1])
-	this.color('wave', ['#666666', 0, '#868686', 1])
-	this.color('wave-active', ['#FF3300', 0, '#FF5100', 1])
-	this.color('wave-selected', ['#993016', 0, '#973C15', 1])
+	this.setGradient('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
+	this.setGradient('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
+	this.setGradient('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
 
-	this.color('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
-	this.color('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
-	this.color('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
-
-	this.color('reflection', ['#999999', 0, '#999999', 1])
-	this.color('reflection-active', ['#FFC0A0', 0, '#FFC0A0', 1])
+	this.setColor('reflection', '#999999')
+	this.setColor('reflection-active', '#FFC0A0')
 }
 
 WAVEFORM.prototype.draw = function() {
@@ -196,8 +198,8 @@ WAVEFORM.prototype.draw = function() {
 
 	// clear canvas for redraw
 	this.ctx.clearRect ( 0 , 0 , this.width , this.height );
-	
-	// itterate waves 
+
+	// itterate waves
 	for(var i=0; i<this.waves.length; i+=1) {
 
 		// wave
