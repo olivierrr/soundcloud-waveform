@@ -69,6 +69,38 @@ WAVEFORM.prototype.init = function() {
 
 }
 
+WAVEFORM.prototype.play = function(mediaLength) {
+
+	this.isPlaying = true
+
+	this.mediaLength = mediaLength
+
+	this.secondsPlayed =  0
+
+	this.AnimTime = ( this.mediaLength / this.waves.length)
+
+	function foo(){
+
+		this.secondsPlayed += this.AnimTime
+
+		if(this.secondsPlayed >= this.mediaLength) this.pause()
+
+		console.log(this.secondsPlayed + '  ' + this.AnimTime + '  ' + this.mediaLength)
+
+		this.active += 1
+		this.draw()
+	}
+	
+	this.playInterval = setInterval(foo.bind(this), this.AnimTime)
+}
+
+WAVEFORM.prototype.pause = function() {
+
+	this.isPlaying = false
+	
+	clearInterval(this.playInterval)
+}
+
 WAVEFORM.prototype.destroy = function() {
 	//todo
 }
