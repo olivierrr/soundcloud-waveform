@@ -65,7 +65,7 @@ WAVEFORM.prototype.init = function() {
 	this.cache()
 
 	//render
-	this.draw()
+	this.render()
 
 }
 
@@ -95,7 +95,7 @@ WAVEFORM.prototype.play = function(mediaLength) {
 
 		console.log(this.clickPercent)
 
-		this.draw()
+		this.render()
 	}
 	
 	this.playInterval = setInterval(foo.bind(this), this.AnimTime)
@@ -128,7 +128,7 @@ WAVEFORM.prototype.onMouseOut = function(e) {
 
 	this.selected = -1
 
-	this.draw()
+	this.render()
 }
 
 WAVEFORM.prototype.onMouseUp = function(e) {
@@ -153,7 +153,7 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 		this.selected = waveClicked
 	}
 
-	this.draw()
+	this.render()
 
 }
 
@@ -176,7 +176,7 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 
 	this.active = this.calcPercent()
 
-	this.draw()
+	this.render()
 }
 
 WAVEFORM.prototype.update = function(options) {
@@ -218,7 +218,7 @@ WAVEFORM.prototype.update = function(options) {
 	}
 
 	//render
-	this.draw()
+	this.render()
 }
 
 // 'experimental'
@@ -251,6 +251,21 @@ WAVEFORM.prototype.addColors = function() {
 
 	this.setColor('reflection', '#999999')
 	this.setColor('reflection-active', '#FFC0A0')
+}
+
+window.requestAnimFrame = (function(){
+  	return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        window.oRequestAnimationFrame      ||
+        window.msRequestAnimationFrame     ||
+        function( callback ){
+          window.setTimeout(callback, 1000/30);
+        }
+})()
+
+WAVEFORM.prototype.render = function() {
+	requestAnimationFrame(this.draw.bind(this))
 }
 
 WAVEFORM.prototype.draw = function() {
