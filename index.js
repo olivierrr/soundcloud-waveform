@@ -73,16 +73,18 @@ WAVEFORM.prototype.play = function(mediaLength) {
 
 	this.isPlaying = true
 
+	// length of media in seconds
 	this.mediaLength = mediaLength*1000
 
+	// seconds played so far
 	this.secondsPlayed =  0
 
+	// time that each wave takes to become 'active'
 	this.AnimTime = ( this.mediaLength / this.waves.length)
 
 	function foo(){
 
 		this.secondsPlayed += this.AnimTime
-		console.log('derp')
 
 		if(this.active >= this.waves.length) this.pause()
 
@@ -149,6 +151,14 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 
 }
 
+// i'm awful
+WAVEFORM.prototype.calcPercent = function() {
+
+	var x =  Math.round(( this.clickPercent * this.width ) / ( this.waveWidth + this.gutterWidth ))
+
+	return x
+}
+
 WAVEFORM.prototype.onMouseDown = function(e) {
 
 	this.isDragging = true
@@ -156,9 +166,9 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
 	var y = e.y - this.canvas.offsetTop
 
-	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) ) 
+	this.clickPercent = x / this.width
 
-	this.active = waveClicked
+	this.active = this.calcPercent()
 
 	this.draw()
 }
@@ -353,6 +363,9 @@ WAVEFORM.prototype.cache = function() {
 
 		}
 	}
+
+	// this shouldn't be here!
+	this.active = this.calcPercent()
 
 	this.paddingLeft = Math.floor((this.width - ((this.gutterWidth + this.waveWidth)*waves.length))/2)
 	this.paddingRight = Math.ceil((this.width - ((this.gutterWidth + this.waveWidth)*waves.length))/2)
