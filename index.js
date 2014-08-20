@@ -73,7 +73,7 @@ WAVEFORM.prototype.play = function(mediaLength) {
 
 	this.isPlaying = true
 
-	this.mediaLength = mediaLength
+	this.mediaLength = mediaLength*1000
 
 	this.secondsPlayed =  0
 
@@ -82,12 +82,12 @@ WAVEFORM.prototype.play = function(mediaLength) {
 	function foo(){
 
 		this.secondsPlayed += this.AnimTime
+		console.log('derp')
 
-		if(this.secondsPlayed >= this.mediaLength) this.pause()
-
-		console.log(this.secondsPlayed + '  ' + this.AnimTime + '  ' + this.mediaLength)
+		if(this.active >= this.waves.length) this.pause()
 
 		this.active += 1
+
 		this.draw()
 	}
 	
@@ -99,6 +99,10 @@ WAVEFORM.prototype.pause = function() {
 	this.isPlaying = false
 	
 	clearInterval(this.playInterval)
+}
+
+WAVEFORM.prototype.skipTo = function() {
+	//todo	
 }
 
 WAVEFORM.prototype.destroy = function() {

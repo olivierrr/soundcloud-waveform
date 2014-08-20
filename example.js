@@ -58,6 +58,12 @@ var gui_ = function() {
 	this.gutterWidth = 1;
 	this.waveWidth = 2;
 	this.reflection = 0;
+	this.play = function(){
+		window.o.play(30)
+	}
+	this.pause = function(){
+		window.o.pause()
+	}
 }
 
 
@@ -74,6 +80,10 @@ function datGui() {
 	var waveWidth = gui.add(text, 'waveWidth', 0, 50).step(1)
 
 	var reflection = gui.add(text, 'reflection', 0, 0.5)
+
+	gui.add(text, 'play')
+
+	gui.add(text, 'pause')
 
 
 	width.onChange(function(value) {
