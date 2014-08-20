@@ -80,7 +80,7 @@ WAVEFORM.prototype.play = function(mediaLength) {
 	this.secondsPlayed =  0
 
 	// time that each wave takes to become 'active'
-	this.AnimTime = ( this.mediaLength / this.waves.length)
+	this.AnimTime = ( this.mediaLength / this.waves.length )
 
 	function foo(){
 
@@ -88,7 +88,12 @@ WAVEFORM.prototype.play = function(mediaLength) {
 
 		if(this.active >= this.waves.length) this.pause()
 
-		this.active += 1
+		//this.active += 1
+
+		this.clickPercent += (this.width/this.waves.length)/1000
+		this.active = this.calcPercent()
+
+		console.log(this.clickPercent)
 
 		this.draw()
 	}
@@ -140,7 +145,8 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 
 	if(this.isDragging === true) {
 		this.selected = -1
-		this.active = waveClicked
+		this.clickPercent = x / this.width
+		this.active = this.calcPercent()
 	}
 
 	else {
