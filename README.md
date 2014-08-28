@@ -3,20 +3,29 @@ soundcloud-waveform
 
 ## usage
 
+![alt tag](http://i.imgur.com/FzZjzFT.png)
+
 ```js
 var foo = new Waveformer()
-foo.init(options)
+foo.init({
+    waveformer: [ /* array of floats */ ],
+    height: 200,
+    width: 800,
+    reflection: 0.3,
+    waveWidth: 2,
+    gutterWidth: 1,
+    container: document.body
+})
 ```
 
 options are:
 * `waveform` array of floats
-* `gutterWidth` pixels between waves
-* `waveWidth` wave width in pixels
-* `width` waveform width in pixels
 * `height` waveform height in pixels
-* `container` dom node where waveform will be appended
+* `width` waveform width in pixels
 * `reflection` 0-50% where 0.34 = 34%
-
+* `waveWidth` wave width in pixels
+* `gutterWidth` pixels between waves
+* `container` dom node where waveform will be appended
 
 ## events
 
