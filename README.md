@@ -27,7 +27,7 @@ options are:
 * `waveWidth` wave width in pixels
 * `gutterWidth` pixels between waves
 * `container` dom node where waveform will be appended
-* `trackLength` track length in secons
+* `trackLength` track length in seconds
 
 ## events
 
