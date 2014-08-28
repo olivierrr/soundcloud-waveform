@@ -43,10 +43,10 @@ when track is played
 ### `finished(waveformer)`
 when track finishes playing
 
-### `hover(waveformer, mousePosTrackTime, waveClicked)` //todo
+### `hover(waveformer, mousePosTrackTime, waveClicked)`
 on mouse hover
 
-### `click(waveformer, mousePosTrackTime, waveClicked)` //todo
+### `click(waveformer, mousePosTrackTime, waveClicked)`
 on mouse click
 
 ## API

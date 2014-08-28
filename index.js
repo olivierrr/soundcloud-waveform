@@ -178,7 +178,10 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 
 	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
 
-	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) )
+	var waveClicked = this.getWaveClicked(x)
+	var mousePosTrackTime = this.getMousePosTrackTime(x)
+
+	this.fireEvent('hover', mousePosTrackTime, waveClicked)
 
 	if(this.isDragging === true) {
 		this.selected = -1
@@ -207,9 +210,32 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 
 	this.clickPercent = x / this.width
 
+	var waveClicked = this.getWaveClicked(x)
+	var mousePosTrackTime = this.getMousePosTrackTime(x)
+
+	this.fireEvent('click', mousePosTrackTime, waveClicked)
+
 	this.active = this.calcPercent()
 
 	this.render()
+}
+
+WAVEFORM.prototype.getWaveClicked = function(x) {
+
+	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) )
+
+	if(waveClicked > this.waves.length) return this.waves.length
+	else if(waveClicked < 0) return 0
+	else return waveClicked
+}
+
+WAVEFORM.prototype.getMousePosTrackTime = function(x) {
+
+	var mousePosTrackTime = ((this.trackLength/this.waves.length) * this.getWaveClicked(x))
+
+	if(mousePosTrackTime > this.trackLength) return this.trackLength
+	else if(mousePosTrackTime < 0) return 0
+	else return mousePosTrackTime
 }
 
 WAVEFORM.prototype.update = function(options) {
