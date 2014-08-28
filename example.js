@@ -59,7 +59,7 @@ var gui_ = function() {
 	this.waveWidth = 2;
 	this.reflection = 0;
 	this.play = function(){
-		window.o.play(30)
+		window.o.play(60)
 	}
 	this.pause = function(){
 		window.o.pause()

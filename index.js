@@ -16,7 +16,7 @@ var WAVEFORM = function(options) {
 	this.waveWidth = options.waveWidth || 3
 
 	// unique ID
-	this.id = Math.floor((Math.random() * 10000) + 1);
+	this.id = Math.random()
 
 	// canvas node
 	this.canvas = document.createElement('canvas')
@@ -39,8 +39,6 @@ var WAVEFORM = function(options) {
 }
 
 WAVEFORM.prototype.init = function() {
-
-	//console.log(this.id + ' init')
 
 	// set ID
 	this.canvas.setAttribute('data-waveform-id', this.id)
@@ -71,10 +69,12 @@ WAVEFORM.prototype.init = function() {
 
 WAVEFORM.prototype.play = function(mediaLength) {
 
+	clearInterval(this.playInterval)
+
 	this.isPlaying = true
 
 	// length of media in seconds
-	this.mediaLength = mediaLength*1000
+	this.mediaLength = mediaLength*1000 || this.mediaLength
 
 	// seconds played so far
 	this.secondsPlayed =  0
@@ -88,12 +88,8 @@ WAVEFORM.prototype.play = function(mediaLength) {
 
 		if(this.active >= this.waves.length) this.pause()
 
-		//this.active += 1
-
 		this.clickPercent += (this.width/this.waves.length)/1000
-		this.active = this.calcPercent()
-
-		console.log(this.clickPercent)
+		this.active += 1
 
 		this.render()
 	}
@@ -157,12 +153,9 @@ WAVEFORM.prototype.onMouseOver = function(e) {
 
 }
 
-// i'm awful
 WAVEFORM.prototype.calcPercent = function() {
 
-	var x =  Math.round(( this.clickPercent * this.width ) / ( this.waveWidth + this.gutterWidth ))
-
-	return x
+	return  Math.round(( this.clickPercent * this.width ) / ( this.waveWidth + this.gutterWidth ))
 }
 
 WAVEFORM.prototype.onMouseDown = function(e) {
@@ -180,8 +173,6 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 }
 
 WAVEFORM.prototype.update = function(options) {
-
-	//console.log(this.id + ' update')
 
 	if(options) {
 
@@ -270,8 +261,6 @@ WAVEFORM.prototype.render = function() {
 
 WAVEFORM.prototype.draw = function() {
 
-	//console.log(this.id + ' draw')
-
 	var gutter, xPos, yPos
 
 	xPos = this.paddingLeft
@@ -344,11 +333,11 @@ WAVEFORM.prototype.draw = function() {
 
 WAVEFORM.prototype.updateHeight = function(first_argument) {
 
-	this.waveOffset = Math.floor( this.height  - (this.height * this.reflection) )
+	this.waveOffset = Math.round( this.height  - (this.height * this.reflection) )
 
-	this.reflectionHeight = Math.floor( this.height - this.waveOffset )
+	this.reflectionHeight = Math.round( this.height - this.waveOffset )
 
-	this.waveHeight = Math.floor( this.height - this.reflectionHeight )
+	this.waveHeight = this.height - this.reflectionHeight
 
 	this.addColors()
 }
@@ -359,14 +348,12 @@ WAVEFORM.prototype.cache = function() {
 
 	var wavesPerWave, waves, wave, i, waveCount
 
-	// console.log('waveOffset: ' + this.waveOffset )
-	// console.log(' waveHeight: ' + this.waveHeight + ' reflectionHeight: ' + this.reflectionHeight + '  = ' + (this.waveHeight + this.reflectionHeight) )
-
-	waveCount = Math.ceil( this.width / (this.gutterWidth + this.waveWidth) )
+	waveCount = this.width / (this.gutterWidth + this.waveWidth)
 
 	wavesPerWave = Math.ceil(this.waveform.length / waveCount)
 
 	waves = []
+	
 	wave = 0
 
 	for(i=0; i<this.waveform.length; i+=1) {
@@ -381,7 +368,6 @@ WAVEFORM.prototype.cache = function() {
 			waves.push(wave)
 
 			wave = 0
-
 		}
 	}
 
@@ -390,6 +376,8 @@ WAVEFORM.prototype.cache = function() {
 
 	this.paddingLeft = Math.floor((this.width - ((this.gutterWidth + this.waveWidth)*waves.length))/2)
 	this.paddingRight = Math.ceil((this.width - ((this.gutterWidth + this.waveWidth)*waves.length))/2)
+
+	if(this.isPlaying) this.play()
 
 	return this.waves = waves
 }
