@@ -1,3 +1,14 @@
+window.requestAnimFrame = (function(){
+  	return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        window.oRequestAnimationFrame      ||
+        window.msRequestAnimationFrame     ||
+        function( callback ){
+          window.setTimeout(callback, 1000/30);
+        }
+})()
+
 var WAVEFORM = function(options) {
 
 	if(!options.container) {
@@ -36,6 +47,35 @@ var WAVEFORM = function(options) {
 	// is in focus
 	this.isFocus = false
 
+	// holds events
+	this.events = {}
+
+}
+
+WAVEFORM.prototype.on = function(name, callback) {
+
+	if(!name || !callback) return
+
+	this.events[name] ?
+		this.events[name].push(callback) :
+		this.events[name] = {
+			
+			e:[callback], 
+			push: function(a){
+				this.e.push(a)
+			}
+		}
+}
+
+WAVEFORM.prototype.fireEvent = function(name) {
+
+	if(!this.events[name]) return
+
+	var event = this.events[name].e
+
+	for(var i=0; i<event.length; i++) {
+		event[i](this)
+	}
 }
 
 WAVEFORM.prototype.init = function() {
@@ -76,7 +116,6 @@ WAVEFORM.prototype.play = function(mediaLength) {
 	// length of media in seconds
 	this.mediaLength = mediaLength*1000 || this.mediaLength
 
-	// seconds played so far
 	this.secondsPlayed =  0
 
 	// time that each wave takes to become 'active'
@@ -93,7 +132,7 @@ WAVEFORM.prototype.play = function(mediaLength) {
 
 		this.render()
 	}
-	
+
 	this.playInterval = setInterval(foo.bind(this), this.AnimTime)
 }
 
@@ -135,7 +174,6 @@ WAVEFORM.prototype.onMouseUp = function(e) {
 WAVEFORM.prototype.onMouseOver = function(e) {
 
 	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
-	var y = e.y - this.canvas.offsetTop
 
 	var waveClicked = Math.round( x / (this.waveWidth + this.gutterWidth) )
 
@@ -163,7 +201,6 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 	this.isDragging = true
 
 	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
-	var y = e.y - this.canvas.offsetTop
 
 	this.clickPercent = x / this.width
 
@@ -229,31 +266,16 @@ WAVEFORM.prototype.setColor = function(name, color) {
 }
 
 WAVEFORM.prototype.addColors = function() {
-
-	//default colors
 	this.setColor('wave-focus', '#333333')
 	this.setGradient('wave', ['#666666', 0, '#868686', 1])
 	this.setGradient('wave-active', ['#FF3300', 0, '#FF5100', 1])
 	this.setGradient('wave-selected', ['#993016', 0, '#973C15', 1])
-
 	this.setGradient('gutter', ['#6B6B6B', 0, '#c9c9c9', 1])
 	this.setGradient('gutter-active', ['#FF3704', 0, '#FF8F63', 1])
 	this.setGradient('gutter-selected', ['#9A371E', 0, '#CE9E8A', 1])
-
 	this.setColor('reflection', '#999999')
 	this.setColor('reflection-active', '#FFC0A0')
 }
-
-window.requestAnimFrame = (function(){
-  	return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame    ||
-        window.oRequestAnimationFrame      ||
-        window.msRequestAnimationFrame     ||
-        function( callback ){
-          window.setTimeout(callback, 1000/30);
-        }
-})()
 
 WAVEFORM.prototype.render = function() {
 	requestAnimationFrame(this.draw.bind(this))
