@@ -47,6 +47,8 @@ var WAVEFORM = function(options) {
 	// is in focus
 	this.isFocus = false
 
+	this.secondsPlayed = 0
+
 	// holds events
 	this.events = {}
 
@@ -59,7 +61,7 @@ WAVEFORM.prototype.on = function(name, callback) {
 	this.events[name] ?
 		this.events[name].push(callback) :
 		this.events[name] = {
-			
+
 			e:[callback], 
 			push: function(a){
 				this.e.push(a)
@@ -71,11 +73,12 @@ WAVEFORM.prototype.fireEvent = function(name) {
 
 	if(!this.events[name]) return
 
-	var event = this.events[name].e
+	var args = [].splice.call(arguments, 0)
+	args[0] = this
 
-	for(var i=0; i<event.length; i++) {
-		event[i](this)
-	}
+	this.events[name].e.forEach(function(event) {
+		event.apply(null, args)
+	})
 }
 
 WAVEFORM.prototype.init = function() {
@@ -105,6 +108,7 @@ WAVEFORM.prototype.init = function() {
 	//render
 	this.render()
 
+	this.fireEvent('ready')
 }
 
 WAVEFORM.prototype.play = function(mediaLength) {
@@ -116,7 +120,7 @@ WAVEFORM.prototype.play = function(mediaLength) {
 	// length of media in seconds
 	this.mediaLength = mediaLength*1000 || this.mediaLength
 
-	this.secondsPlayed =  0
+	this.fireEvent('play', this.secondsPlayed)
 
 	// time that each wave takes to become 'active'
 	this.AnimTime = ( this.mediaLength / this.waves.length )
@@ -125,7 +129,10 @@ WAVEFORM.prototype.play = function(mediaLength) {
 
 		this.secondsPlayed += this.AnimTime
 
-		if(this.active >= this.waves.length) this.pause()
+		if(this.active >= this.waves.length) {
+			this.fireEvent('finish')
+			this.pause()
+		}
 
 		this.clickPercent += (this.width/this.waves.length)/1000
 		this.active += 1
@@ -137,6 +144,8 @@ WAVEFORM.prototype.play = function(mediaLength) {
 }
 
 WAVEFORM.prototype.pause = function() {
+
+	this.fireEvent('pause', this.secondsPlayed)
 
 	this.isPlaying = false
 	
