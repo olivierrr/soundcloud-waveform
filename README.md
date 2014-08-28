@@ -14,7 +14,8 @@ foo.init({
     reflection: 0.3,
     waveWidth: 2,
     gutterWidth: 1,
-    container: document.body
+    container: document.body,
+    trackLength: 420
 })
 ```
 
@@ -26,6 +27,7 @@ options are:
 * `waveWidth` wave width in pixels
 * `gutterWidth` pixels between waves
 * `container` dom node where waveform will be appended
+* `trackLength` track length in secons
 
 ## events
 

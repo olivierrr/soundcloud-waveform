@@ -21,6 +21,9 @@ var WAVEFORM = function(options) {
 	this.waveform = options.waveform
 	this.reflection = options.reflection || 0
 
+	// length of track in seconds
+	this.trackLength = options.trackLength*1000 || 1*100
+
 	this.colors = {}
 
 	this.gutterWidth = options.gutterWidth || 1
@@ -59,14 +62,8 @@ WAVEFORM.prototype.on = function(name, callback) {
 	if(!name || !callback) return
 
 	this.events[name] ?
-		this.events[name].push(callback) :
-		this.events[name] = {
-
-			e:[callback], 
-			push: function(a){
-				this.e.push(a)
-			}
-		}
+		this.events[name].e.push(callback) :
+		this.events[name] = { e:[callback] }
 }
 
 WAVEFORM.prototype.fireEvent = function(name) {
@@ -111,19 +108,16 @@ WAVEFORM.prototype.init = function() {
 	this.fireEvent('ready')
 }
 
-WAVEFORM.prototype.play = function(mediaLength) {
+WAVEFORM.prototype.play = function() {
 
 	clearInterval(this.playInterval)
 
 	this.isPlaying = true
 
-	// length of media in seconds
-	this.mediaLength = mediaLength*1000 || this.mediaLength
-
 	this.fireEvent('play', this.secondsPlayed)
 
 	// time that each wave takes to become 'active'
-	this.AnimTime = ( this.mediaLength / this.waves.length )
+	this.AnimTime = ( this.trackLength / this.waves.length )
 
 	function foo(){
 
