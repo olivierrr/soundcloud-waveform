@@ -142,12 +142,14 @@ WAVEFORM.prototype.pause = function() {
 	this.fireEvent('pause', this.secondsPlayed)
 
 	this.isPlaying = false
-	
+
 	clearInterval(this.playInterval)
 }
 
 WAVEFORM.prototype.skipTo = function() {
-	//todo	
+
+	var newTime = ((this.trackLength/this.waves.length)*this.active)
+	this.fireEvent('skip', newTime)
 }
 
 WAVEFORM.prototype.destroy = function() {
@@ -171,6 +173,7 @@ WAVEFORM.prototype.onMouseOut = function(e) {
 
 WAVEFORM.prototype.onMouseUp = function(e) {
 
+	this.skipTo()
 	this.isDragging = false
 }
 
@@ -432,5 +435,11 @@ WAVEFORM.prototype.cache = function() {
 
 	return this.waves = waves
 }
+
+
+if (typeof module === 'object' && module.exports) {
+	module.exports = WAVEFORM
+}
+
 
 var example = require('./example')(WAVEFORM)
