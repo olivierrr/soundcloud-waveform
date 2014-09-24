@@ -49,6 +49,9 @@ on mouse hover
 ### `click(waveformer, mousePosTrackTime, waveClicked)`
 on mouse click
 
+### `skip(waveformer, newTime)`
+when user skips to a new time
+
 ## API
 
 ### controls
