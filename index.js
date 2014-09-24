@@ -9,7 +9,7 @@ window.requestAnimFrame = (function(){
         }
 })()
 
-var WAVEFORM = function(options) {
+var WAVEFORM = window.WAVEFORM = function(options) {
 
 	if(!options.container) {
 		throw new Error('waveform needs a container')
@@ -436,10 +436,6 @@ WAVEFORM.prototype.cache = function() {
 	return this.waves = waves
 }
 
-
 if (typeof module === 'object' && module.exports) {
 	module.exports = WAVEFORM
 }
-
-
-var example = require('./example')(WAVEFORM)
