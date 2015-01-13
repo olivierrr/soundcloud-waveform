@@ -1,5 +1,7 @@
 soundcloud-waveform
 ===================
+## live example
+[click here](http://olivierrr.github.io/soundcloud-waveform/example/)
 
 ## usage
 
