@@ -179,7 +179,7 @@ WAVEFORM.prototype.onMouseUp = function(e) {
 
 WAVEFORM.prototype.onMouseOver = function(e) {
 
-	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
+	var x = e.clientX - this.canvas.offsetLeft - this.paddingLeft
 
 	var waveClicked = this.getWaveClicked(x)
 	var mousePosTrackTime = this.getMousePosTrackTime(x)
@@ -209,7 +209,7 @@ WAVEFORM.prototype.onMouseDown = function(e) {
 
 	this.isDragging = true
 
-	var x = e.x - this.canvas.offsetLeft - this.paddingLeft
+	var x = e.clientX - this.canvas.offsetLeft - this.paddingLeft
 
 	this.clickPercent = x / this.width
 
